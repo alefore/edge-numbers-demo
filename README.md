@@ -21,7 +21,7 @@ starting from the basic C++ types.
     Number y = FromInt(1) / FromInt(3) + FromDouble(297.003);
     x += y;
 
-The operation is represented with complete fidelity.
+The operation is represented internally with complete fidelity.
 
 ## Conversions
 
@@ -34,6 +34,11 @@ when numbers are converted to strings for printing
 The tree of operations is only evaluated at this point.
 This library is, in that sense, "lazy".
 Division-by-zero errors are only detected during conversion.
+
+In the future, we may optimize the implementation
+to evaluate operations eagerly
+when no precision is lost
+(which we expect to be the majority of cases).
 
 ## Large numbers with small decimals
 
