@@ -21,7 +21,7 @@ starting from the basic C++ types.
     Number y = FromInt(1) / FromInt(3) + FromDouble(297.003);
     x += y;
 
-The operation is represented internally with complete fidelity.
+The operation tree is represented internally with complete fidelity.
 
 ## Conversions
 
@@ -77,7 +77,7 @@ unless `std::move()` is used).
 
 ## Integers
 
-`ToString` only emits as many digits as are needed
+`ToString` only emits as many digits as needed
 to represent a number exactly,
 up to the desired precision:
 
@@ -92,9 +92,28 @@ whether a number is an integer
 
     ToInt(FromInt(1000000) / FromInt(10000))  // => 100
     ToInt(FromInt(1000001) / FromInt(10000))
-    // Error("Error:Inexact numbers can't be represented as integer.")
+    // => Error("Error:Inexact numbers can't be represented as integer.")
 
 This allows Edge's extension language to use a single type to represent numbers.
+
+## Errors
+
+Operations that can run into errors return the type `ValueOrError<T>`
+(where `T` represents an arbitrary type).
+`ValueOrError<T>` is defined as `std::variant<T, Error>`,
+where `Error` is a custom class that holds an error.
+
+`main.cc` contains an example:
+
+    ValueOrError<size_t> b = ToSizeT(FromInt(5) - FromInt(6));
+    if (IsError(b)) {
+      std::cerr << b << std::endl;
+    } else {
+      size_t value = std::get<size_t>(b);
+      ...
+    }
+
+`ValueOrError<T>` is a prevalent pattern applying in Edge to handle errors.
 
 ## Usage
 
