@@ -78,3 +78,9 @@ the library can determine (with full accuracy) whether a number is an integer
   // Error("Error:Inexact numbers can't be represented as integer.")
 
 This allows Edge's extension language to use a single type to represent numbers.
+
+## Usage
+
+This repository is meant to be built with `bazel`:
+
+    bazel run main
