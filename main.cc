@@ -1,8 +1,13 @@
+#include "src/language/error/value_or_error.h"
 #include "src/math/numbers.h"
 
+using afc::language::IsError;
+using afc::language::ValueOrDie;
+using afc::language::ValueOrError;
 using afc::math::numbers::FromDouble;
 using afc::math::numbers::FromInt;
 using afc::math::numbers::Number;
+using afc::math::numbers::ToSizeT;
 using afc::math::numbers::ToString;
 
 Number Pow(Number base, size_t i) {
@@ -34,6 +39,14 @@ int main(int argc, const char** argv) {
 
   std::cout << ToInt(FromInt(1000000) / FromInt(10000)) << std::endl;
   std::cout << ToInt(FromInt(1000001) / FromInt(10000)) << std::endl;
+
+  ValueOrError<size_t> b = ToSizeT(FromInt(-1));
+  if (IsError(b)) {
+    std::cerr << b << std::endl;
+  } else {
+    size_t value = std::get<size_t>(b);
+    std::cout << value << std::endl;
+  }
 
   return 0;
 }
