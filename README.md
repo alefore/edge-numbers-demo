@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The Edge numbers module (build target //src/math:numbers)
+The Edge numbers module (build target `//src/math:numbers`)
 is a simple C++20 library implementing arithmetic operations
 with arbitrary precision.
 
@@ -13,51 +13,62 @@ The library exposes an opaque `Number` type and implements:
 
 ## Operations on Numbers
 
-A Number instance represents a tree of operations
-starting from the basic C++ types
+A `Number` instance represents a tree of operations
 —such as 1024 + (1 / 3) + 297.003—
-in full fidelity:
+starting from the basic C++ types.
 
     Number x = FromInt(1024);
     Number y = FromInt(1) / FromInt(3) + FromDouble(297.003);
     x += y;
+
+The operation is represented with complete fidelity.
 
 ## Conversions
 
 The desired precision is specified only
 when numbers are converted to strings for printing
 (as well as for comparison operators).
-The tree of operations is only evaluated at this point:
 
     ToString(x, 5);  // The string "1321.33633".
 
+The tree of operations is only evaluated at this point.
+This library is, in that sense, "lazy".
+Division-by-zero errors are only detected during conversion.
+
 ## Large numbers with small decimals
 
-There are no limits imposed on the size of the numbers represented.
-Technically, `ToString` receives the desired number of digits as a `size_t`,
-so that would be the limit (numbers with 18446744073709551615 digits).
+No limits are imposed to the size of the numbers represented.
 
     Number a =
         (Pow(FromInt(10), 50) + FromInt(1) / Pow(FromInt(10), 10)) * FromInt(3);
     ToString(a, 70);
     // => "300000000000000000000000000000000000000000000000000.0000000003"
 
+Technically, `ToString` receives the desired number of digits as a `size_t`.
+It would be more accurate to say that
+you may have trouble getting the decimal parts
+of numbers above 10¹⁸⁴⁴⁶⁷⁴⁴⁰⁷³⁷⁰⁹⁵⁵¹⁶¹⁵.
+
 ## Performance
 
-Operations on `Number` instances are obviously slower
-than on standard C++ types.
+Operations on `Number` instances are slower than on standard C++ types.
 
-This is a deliberate choice for the situations where correctness and simplicity
+Using `Number` should be a deliberate choice
+for situations where correctness and simplicity
 (ensuring that every digit printed is fully accurate
 and imposing no constraints
 to the size of representable numbers nor decimal values)
-is preferable.
-I believe this to be a good choice for high-level extension languages,
-that offload resource-intense computations to their host language.
+is desirable.
+I believe this to be a good choice for high-level extension languages
+(such as Edge's C-like memory-managed language).
+These languages can offload resource-intense computations
+to their host language.
 
-The internal representation uses `std::shared_ptr`
+The internal representation uses `std::shared_ptr<>`
 to hold deeply immutable types,
-avoiding deep copies.
+avoiding deep copies
+(at the cost of incurring spurious increment/decrement operations,
+unless `std::move()` is used).
 
 ## Integers
 
@@ -70,12 +81,13 @@ up to the desired precision:
     ToString(FromInt(5) / FromInt(2), digits);  // => "0.25"
 
 In the same vein,
-the library can determine (with full accuracy) whether a number is an integer
+the library can determine with full accuracy
+whether a number is an integer
 (i.e. can be represented without using decimals):
 
-  ToInt(FromInt(1000000) / FromInt(10000))  // => 100
-  ToInt(FromInt(1000001) / FromInt(10000))
-  // Error("Error:Inexact numbers can't be represented as integer.")
+    ToInt(FromInt(1000000) / FromInt(10000))  // => 100
+    ToInt(FromInt(1000001) / FromInt(10000))
+    // Error("Error:Inexact numbers can't be represented as integer.")
 
 This allows Edge's extension language to use a single type to represent numbers.
 
@@ -84,3 +96,15 @@ This allows Edge's extension language to use a single type to represent numbers.
 This repository is meant to be built with `bazel`:
 
     bazel run main
+
+## Implementation
+
+The implementation is mostly in the following files,
+which are part of the Edge repository:
+
+* Header file:
+  https://github.com/alefore/edge/blob/master/src/math/numbers.h
+* Implementation and tests:
+  https://github.com/alefore/edge/blob/master/src/math/numbers.cc
+
+As of 2023-10-03, the implementation file is ~600 LOC, ~200 of which are tests.
