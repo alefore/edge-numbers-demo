@@ -3,3 +3,16 @@ cc_binary(
     srcs = ["main.cc"],
     deps = ["@edge//:numbers"],
 )
+
+cc_binary(
+    name = "calculator",
+    srcs = ["calculator.cc"],
+    linkopts = [
+        "-lreadline",
+        "-lhistory",
+    ],
+    deps = [
+        "@com_github_google_glog//:glog",
+        "@edge//:vm",
+    ],
+)

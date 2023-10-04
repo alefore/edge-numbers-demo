@@ -3,3 +3,12 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = ["//src/math:numbers"],
 )
+
+cc_library(
+    name = "vm",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/vm",
+        "//src/vm:default_environment",
+    ],
+)
