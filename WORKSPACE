@@ -3,9 +3,9 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository", "new_git_r
 
 http_archive(
     name = "edge",
-    sha256 = "0b4f819b16a0cd52b60558137ccdfc21c2233b584ecf21acf5d9ebda87155ef8",
-    strip_prefix = "edge-0.4",
-    urls = ["https://github.com/alefore/edge/archive/refs/tags/v0.4.tar.gz"],
+    sha256 = "c33e59acb93cddcb1d8a7ad55e53d086bb4a5fb65e8943eaafc51f988b1ddfe7",
+    strip_prefix = "edge-0.5",
+    urls = ["https://github.com/alefore/edge/archive/refs/tags/v0.5.tar.gz"],
     build_file = "@//:edge.BUILD",
 )
 
