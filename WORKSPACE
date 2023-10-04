@@ -2,9 +2,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "edge",
-    sha256 = "f19cf7fa9ce1434d28641e7f52252dce48dcb197ee20f4b01006ea866f5ccdae",
-    strip_prefix = "edge-0.2",
-    urls = ["https://github.com/alefore/edge/archive/refs/tags/v0.2.tar.gz"],
+    sha256 = "606ad84460b41d9f45bcf1462b549c11d18c149365aae6a87629b98358a93808",
+    strip_prefix = "edge-0.3",
+    urls = ["https://github.com/alefore/edge/archive/refs/tags/v0.3.tar.gz"],
     build_file = "@//:edge.BUILD",
 )
 
