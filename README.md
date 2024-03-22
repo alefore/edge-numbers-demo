@@ -19,13 +19,13 @@ The [edge-numbers-demo repository](http://github.com/alefore/edge-numbers-demo)
 contains two build targets
 meant to be built with `bazel`:
 
-* main:
-  A few examples of how the API is used from C++.
-
-* calculator:
+* [calculator](https://github.com/alefore/edge-numbers-demo/blob/main/calculator.cc):
   A very simple CLI interface
   implementing a calculator
   that uses this library under-the-hood.
+
+* [main](https://github.com/alefore/edge-numbers-demo/blob/main/main.cc):
+  A few examples of how the API is used from C++.
 
 ## Example
 
@@ -38,13 +38,13 @@ meant to be built with `bazel`:
 
 ### Calculator
 
-$ bazel run calculator
-1 / 3 * 100000 * 10009999 + 1
-333666633334.33333
->>> number fact(number x) { if (x <= 1) return 1; else return x * fact(x - 1); }
->>> <void>
->>> fact(150)
->>> 57133839564458545904789328652610540031895535786011264182548375833179829124845398393126574488675311145377107878746854204162666250198684504466355949195922066574942592095735778929325357290444962472405416790722118445437122269675520000000000000000000000000000000000000
+    $ bazel run calculator
+    1 / 3 * 100000 * 10009999 + 1
+    333666633334.33333
+    >>> number fact(number x) { if (x <= 1) return 1; else return x * fact(x - 1); }
+    >>> <void>
+    >>> fact(150)
+    >>> 57133839564458545904789328652610540031895535786011264182548375833179829124845398393126574488675311145377107878746854204162666250198684504466355949195922066574942592095735778929325357290444962472405416790722118445437122269675520000000000000000000000000000000000000
 
 ## Conversion to string
 
@@ -160,13 +160,13 @@ With the exception of `ToDouble`,
 these methods will return an error
 if the number can't be accurately represented in the desired type:
 
-  Number::ToInt32(
-      ValueOrError(Number::FromInt(1010000) / Number::FromInt(10000)))
-  // => 100
+    Number::ToInt32(
+        ValueOrError(Number::FromInt(1010000) / Number::FromInt(10000)))
+    // => 100
 
-  Number::ToInt32(
-      ValueOrError(Number::FromInt(1001000) / Number::FromInt(10000)))
-  // Error("Error:Non-empty remainder: 1")
+    Number::ToInt32(
+        ValueOrError(Number::FromInt(1001000) / Number::FromInt(10000)))
+    // Error("Error:Non-empty remainder: 1")
 
 ### Error handling
 
