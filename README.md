@@ -62,10 +62,10 @@ even if decimal digits is larger than 1.
     size_t digits = 12;
 
     (Number::FromInt64(2) / Number::FromInt64(3)).ToString(digits);
-    // => "0.666666666666"
+    // => "0.666666666667"
 
     (Number::FromInt64(5) / Number::FromInt64(2)).ToString(digits);
-    // => "0.25"
+    // => "2.5"
 
 ## Large numbers with small decimals
 
@@ -160,13 +160,13 @@ With the exception of `ToDouble`,
 these methods will return an error
 if the number can't be accurately represented in the desired type:
 
-  Number::ToInt64(
+  Number::ToInt32(
       ValueOrError(Number::FromInt(1010000) / Number::FromInt(10000)))
   // => 100
 
-  Number::ToInt64(
+  Number::ToInt32(
       ValueOrError(Number::FromInt(1001000) / Number::FromInt(10000)))
-  // Error("Error:Inexact numbers can't be represented as integer.")
+  // Error("Error:Non-empty remainder: 1")
 
 ### Error handling
 
