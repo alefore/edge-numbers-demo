@@ -1,2 +1,2 @@
 ## Set C++ standard to C++20.
-build --copt=-std=c++20
+build --copt=-std=c++23
