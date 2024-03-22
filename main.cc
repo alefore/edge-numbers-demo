@@ -1,46 +1,41 @@
 #include "src/language/error/value_or_error.h"
+#include "src/math/bigint.h"
 #include "src/math/numbers.h"
 
 using afc::language::IsError;
 using afc::language::ValueOrDie;
 using afc::language::ValueOrError;
-using afc::math::numbers::FromDouble;
-using afc::math::numbers::FromInt;
+using afc::math::numbers::BigInt;
 using afc::math::numbers::Number;
-using afc::math::numbers::ToSizeT;
-using afc::math::numbers::ToString;
-
-Number Pow(Number base, size_t i) {
-  Number output = FromInt(1);
-  while (i > 0) {
-    if (i % 2 == 1) {
-      output = output * base;
-      --i;
-    } else {
-      base *= base;
-      i /= 2;
-    }
-  }
-  return output;
-}
 
 int main(int argc, const char** argv) {
-  Number x = FromInt(1024);
-  Number y = FromInt(1) / FromInt(3) + FromDouble(297.003);
+  Number x = Number::FromInt64(1024);
+  Number y = ValueOrDie(Number::FromInt64(1) / Number::FromInt64(3)) +
+             Number::FromDouble(297.003);
   x += y;
-  std::cout << ToString(x, 5) << std::endl;
+  std::cout << x.ToString(5) << std::endl;
 
-  Number a =
-      (Pow(FromInt(10), 50) + FromInt(1) / Pow(FromInt(10), 10)) * FromInt(3);
-  std::cout << ToString(a, 70) << std::endl;
+  Number a = (Number::FromInt64(10).Pow(BigInt::FromNumber(50)) +
+              ValueOrDie(Number::FromInt64(1) /
+                         Number::FromInt64(10).Pow(BigInt::FromNumber(10)))) *
+             Number::FromInt64(3);
+  std::cout << a.ToString(70) << std::endl;
 
-  std::cout << ToString(FromInt(2) / FromInt(3), 12) << std::endl;
-  std::cout << ToString(FromInt(5) / FromInt(2), 12) << std::endl;
+  std::cout
+      << ValueOrDie(Number::FromInt64(2) / Number::FromInt64(3)).ToString(12)
+      << std::endl;
+  std::cout
+      << ValueOrDie(Number::FromInt64(5) / Number::FromInt64(2)).ToString(12)
+      << std::endl;
 
-  std::cout << ToInt(FromInt(1000000) / FromInt(10000)) << std::endl;
-  std::cout << ToInt(FromInt(1000001) / FromInt(10000)) << std::endl;
+  std::cout << ValueOrDie(Number::FromInt64(1000000) / Number::FromInt64(10000))
+                   .ToInt32()
+            << std::endl;
+  std::cout << ValueOrDie(Number::FromInt64(1000001) / Number::FromInt64(10000))
+                   .ToInt32()
+            << std::endl;
 
-  ValueOrError<size_t> b = ToSizeT(FromInt(-1));
+  ValueOrError<size_t> b = Number::FromInt64(-1).ToSizeT();
   if (IsError(b)) {
     std::cerr << b << std::endl;
   } else {
