@@ -1,7 +1,10 @@
 cc_binary(
     name = "main",
     srcs = ["main.cc"],
-    deps = ["@edge//:numbers"],
+    deps = [
+        "@edge//:bigint",
+        "@edge//:numbers",
+    ],
 )
 
 cc_binary(
