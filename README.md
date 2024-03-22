@@ -39,7 +39,8 @@ meant to be built with `bazel`:
 ### Calculator
 
     $ bazel run calculator
-    1 / 3 * 100000 * 10009999 + 1
+    ...
+    >>> 1 / 3 * 100000 * 10009999 + 1
     333666633334.33333
     >>> number fact(number x) { if (x <= 1) return 1; else return x * fact(x - 1); }
     >>> <void>
