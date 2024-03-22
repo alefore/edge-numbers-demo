@@ -162,7 +162,7 @@ if the number can't be accurately represented in the desired type:
 
     Number::ToInt32(
         ValueOrError(Number::FromInt(1010000) / Number::FromInt(10000)))
-    // => 100
+    // => 101
 
     Number::ToInt32(
         ValueOrError(Number::FromInt(1001000) / Number::FromInt(10000)))
