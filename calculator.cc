@@ -23,6 +23,7 @@ using afc::language::FromByteString;
 using afc::language::MakeNonNullShared;
 using afc::language::MakeNonNullUnique;
 using afc::language::NonNull;
+using afc::language::OnceOnlyFunction;
 using afc::language::overload;
 using afc::language::Success;
 using afc::vm::Environment;
@@ -34,14 +35,13 @@ int main(int argc, char** argv) {
   google::InitGoogleLogging(argv[0]);
   google::InstallFailureSignalHandler();
 
-  auto thread_pool = MakeNonNullShared<ThreadPool>(64, nullptr);
+  auto thread_pool = MakeNonNullShared<ThreadPool>(64);
   auto operation_factory = MakeNonNullShared<OperationFactory>(thread_pool);
   gc::Pool pool(gc::Pool::Options{
       .collect_duration_threshold = afc::infrastructure::Duration(0.02),
       .operation_factory = operation_factory.get_shared(),
       .max_bag_shards = 1});
-  gc::Root<Environment> environment = pool.NewRoot(
-      MakeNonNullUnique<Environment>(NewDefaultEnvironment(pool).ptr()));
+  gc::Root<Environment> environment = NewDefaultEnvironment(pool);
 
   while (true) {
     std::unique_ptr<char, decltype(&free)> line(readline(">>> "), &free);
@@ -50,9 +50,9 @@ int main(int argc, char** argv) {
     std::visit(
         overload{[&pool, &environment](
                      NonNull<std::unique_ptr<Expression>> expression) -> void {
-                   std::function<void()> resume_callback;
+                   std::optional<OnceOnlyFunction<void()>> resume_callback;
                    Evaluate(std::move(expression), pool, environment,
-                            [&](std::function<void()> resume) {
+                            [&](OnceOnlyFunction<void()> resume) {
                               resume_callback = std::move(resume);
                             })
                        .Transform([](const gc::Root<Value>& value) {
@@ -63,10 +63,11 @@ int main(int argc, char** argv) {
                          std::cerr << "Runtime error: " << error << std::endl;
                          return futures::Past(EmptyValue());
                        });
-                   while (resume_callback != nullptr) {
-                     std::function<void()> tmp = std::move(resume_callback);
-                     resume_callback = nullptr;
-                     tmp();
+                   while (resume_callback != std::nullopt) {
+                     OnceOnlyFunction<void()> tmp =
+                         std::move(resume_callback.value());
+                     resume_callback = std::nullopt;
+                     std::invoke(std::move(tmp));
                      pool.Collect();
                    }
                  },
